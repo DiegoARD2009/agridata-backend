@@ -1,24 +1,8 @@
-import nodemailer from 'nodemailer';
 import { Resend } from 'resend';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-console.log('EMAIL_USER:', process.env.EMAIL_USER);
-console.log('EMAIL_PASS:', process.env.EMAIL_PASS ? '✅ cargada' : '❌ undefined');
-
-
-import { Resend } from 'resend';
-
-const resend = new Resend(process.env.RESEND_API_KEY);
-
-
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS, 
-  },
-});
+console.log('RESEND_API_KEY:', process.env.RESEND_API_KEY ? '✅ cargada' : '❌ undefined');
 
 function getVerificationEmailHTML(verificationUrl, userName) {
   return `
