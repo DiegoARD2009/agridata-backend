@@ -14,6 +14,7 @@ const app = express();
 const corsOptions = {
   origin: [
     'http://localhost:4200',
+    'https://agridata-frontend.vercel.app',
     process.env.FRONTEND_URL
   ].filter(Boolean),
   credentials: true // Elimina valores falsy
