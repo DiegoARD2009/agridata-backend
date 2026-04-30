@@ -41,10 +41,7 @@ app.get("/", (req, res) => {
   res.send("API funcionando 🚀");
 });
 
-app.get("/test-recordatorio", async (req, res) => {
-  await enviarRecordatoriosDelDia();
-  res.json({ message: "✅ Recordatorios enviados manualmente" });
-});
+
 
 // Servidor
 app.listen(process.env.PORT || 3000, () => {

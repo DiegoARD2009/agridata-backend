@@ -1,8 +1,16 @@
 import nodemailer from 'nodemailer';
+import { Resend } from 'resend';
 
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 console.log('EMAIL_USER:', process.env.EMAIL_USER);
 console.log('EMAIL_PASS:', process.env.EMAIL_PASS ? '✅ cargada' : '❌ undefined');
+
+
+import { Resend } from 'resend';
+
+const resend = new Resend(process.env.RESEND_API_KEY);
+
 
 const transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -82,13 +90,14 @@ function getVerificationEmailHTML(verificationUrl, userName) {
 }
 
 export async function sendVerificationEmail(toEmail, userName, verificationUrl) {
-  await transporter.sendMail({
-    from: `"TuApp" <${process.env.EMAIL_USER}>`,
+  await resend.emails.send({
+    from: 'AgriData <onboarding@resend.dev>', // ← dominio gratuito de Resend
     to: toEmail,
-    subject: '✉️ Confirma tu correo electrónico',
-    html: getVerificationEmailHTML(verificationUrl, userName),
+    subject: '✉️ Confirma tu correo electrónico — AgriData',
+    html: getVerificationEmailHTML(verificationUrl, userName)
   });
 }
+
 
 // ── RECORDATORIO DE ACTIVIDADES ───────────────────────────────────────
 function getRecordatorioHTML(userName, nombreCultivo, tipoActividad, fechaProgramada) {
@@ -197,10 +206,10 @@ function getRecordatorioHTML(userName, nombreCultivo, tipoActividad, fechaProgra
 }
 
 export async function sendRecordatorio(toEmail, userName, nombreCultivo, tipoActividad, fechaProgramada) {
-  await transporter.sendMail({
-    from: `"AgriData 🌱" <${process.env.EMAIL_USER}>`,
+  await resend.emails.send({
+    from: 'AgriData <onboarding@resend.dev>',
     to: toEmail,
     subject: `⏰ Recordatorio: ${tipoActividad} — ${nombreCultivo}`,
-    html: getRecordatorioHTML(userName, nombreCultivo, tipoActividad, fechaProgramada),
+    html: getRecordatorioHTML(userName, nombreCultivo, tipoActividad, fechaProgramada)
   });
 }
