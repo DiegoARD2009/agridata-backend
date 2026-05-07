@@ -74,12 +74,22 @@ function getVerificationEmailHTML(verificationUrl, userName) {
 }
 
 export async function sendVerificationEmail(toEmail, userName, verificationUrl) {
-  await resend.emails.send({
-    from: 'AgriData <onboarding@resend.dev>', // ← dominio gratuito de Resend
-    to: toEmail,
-    subject: '✉️ Confirma tu correo electrónico — AgriData',
-    html: getVerificationEmailHTML(verificationUrl, userName)
-  });
+  try {
+    const response = await resend.emails.send({
+      from: 'AgriData <onboarding@resend.dev>',
+      to: toEmail,
+      subject: '✉️ Confirma tu correo electrónico — AgriData',
+      html: getVerificationEmailHTML(verificationUrl, userName)
+    });
+
+    console.log("📩 Respuesta de Resend:", response);
+
+    return response;
+
+  } catch (error) {
+    console.error("❌ Error enviando correo de verificación:", error);
+    throw error;
+  }
 }
 
 
