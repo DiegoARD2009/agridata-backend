@@ -1,6 +1,10 @@
 import nodemailer from 'nodemailer';
+import dns from 'dns';
+
+dns.setDefaultResultOrder('ipv4first');
 
 const transporter = nodemailer.createTransport({
+
   host: 'smtp.gmail.com',
   port: 587,
   secure: false,
@@ -13,6 +17,17 @@ const transporter = nodemailer.createTransport({
   tls: {
     rejectUnauthorized: false
   }
+
+});
+
+transporter.verify((error, success) => {
+
+  if (error) {
+    console.error('❌ SMTP ERROR:', error);
+  } else {
+    console.log('✅ SMTP listo');
+  }
+
 });
 
 console.log(
