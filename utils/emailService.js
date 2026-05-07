@@ -1,9 +1,17 @@
-import { Resend } from 'resend';
+import nodemailer from 'nodemailer';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS
+  }
+});
 
-console.log('RESEND_API_KEY:', process.env.RESEND_API_KEY ? '✅ cargada' : '❌ undefined');
-
+console.log(
+  'EMAIL_USER:',
+  process.env.EMAIL_USER ? '✅ cargado' : '❌ undefined'
+);
 function getVerificationEmailHTML(verificationUrl, userName) {
   return `
   <!DOCTYPE html>
@@ -73,21 +81,35 @@ function getVerificationEmailHTML(verificationUrl, userName) {
   `;
 }
 
-export async function sendVerificationEmail(toEmail, userName, verificationUrl) {
+export async function sendVerificationEmail(
+  toEmail,
+  userName,
+  verificationUrl
+) {
+
   try {
-    const response = await resend.emails.send({
-      from: 'AgriData <onboarding@resend.dev>',
+
+    const response = await transporter.sendMail({
+      from: `"AgriData" <${process.env.EMAIL_USER}>`,
       to: toEmail,
       subject: '✉️ Confirma tu correo electrónico — AgriData',
-      html: getVerificationEmailHTML(verificationUrl, userName)
+      html: getVerificationEmailHTML(
+        verificationUrl,
+        userName
+      )
     });
 
-    console.log("📩 Respuesta de Resend:", response);
+    console.log('📩 Correo enviado:', response.messageId);
 
     return response;
 
   } catch (error) {
-    console.error("❌ Error enviando correo de verificación:", error);
+
+    console.error(
+      '❌ Error enviando correo de verificación:',
+      error
+    );
+
     throw error;
   }
 }
@@ -199,11 +221,43 @@ function getRecordatorioHTML(userName, nombreCultivo, tipoActividad, fechaProgra
   `;
 }
 
-export async function sendRecordatorio(toEmail, userName, nombreCultivo, tipoActividad, fechaProgramada) {
-  await resend.emails.send({
-    from: 'AgriData <onboarding@resend.dev>',
-    to: toEmail,
-    subject: `⏰ Recordatorio: ${tipoActividad} — ${nombreCultivo}`,
-    html: getRecordatorioHTML(userName, nombreCultivo, tipoActividad, fechaProgramada)
-  });
+
+export async function sendRecordatorio(
+  toEmail,
+  userName,
+  nombreCultivo,
+  tipoActividad,
+  fechaProgramada
+) {
+
+  try {
+
+    const response = await transporter.sendMail({
+      from: `"AgriData" <${process.env.EMAIL_USER}>`,
+      to: toEmail,
+      subject: `⏰ Recordatorio: ${tipoActividad} — ${nombreCultivo}`,
+      html: getRecordatorioHTML(
+        userName,
+        nombreCultivo,
+        tipoActividad,
+        fechaProgramada
+      )
+    });
+
+    console.log(
+      '📩 Recordatorio enviado:',
+      response.messageId
+    );
+
+    return response;
+
+  } catch (error) {
+
+    console.error(
+      '❌ Error enviando recordatorio:',
+      error
+    );
+
+    throw error;
+  }
 }
